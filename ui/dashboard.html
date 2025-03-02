@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div id="content" class="container mt-5">
+        <div class="card p-4 shadow">
+            <h2 class="text-center">Личный кабинет</h2>
+            <p class="text-center">Вы вошли как: <strong id="username"></strong> (роль: <strong id="role"></strong>)</p>
+
+            <h4>Защищённые данные</h4>
+            <button id="getData" class="btn btn-info w-100">Получить данные</button>
+            <p id="data" class="mt-3"></p>
+
+            <h4 class="mt-4 d-none">Запись данных (только для write)</h4>
+            <button id="writeData" class="btn btn-warning w-100 d-none">Отправить запись</button>
+            <p id="writeMessage" class="mt-3 d-none"></p>
+
+            <button id="logout" class="btn btn-danger w-100 mt-4">Выйти</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

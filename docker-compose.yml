@@ -1,0 +1,16 @@
+services:
+  api:
+    build:
+      context: ./jwt-app
+    environment:
+      - JWT_SECRET=my_secret_key
+    restart: always
+
+  ui:
+    build:
+      context: ./ui
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    restart: always
