@@ -5,10 +5,13 @@ $(document).ready(function () {
         const password = $("#password").val();
 
         $.ajax({
-            url: "http://api.127.0.0.1.nip.io/login",
+            url: "https://api.127.0.0.1.nip.io/login",
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify({ username, password }),
+            xhrFields: {
+                withCredentials: true  // Разрешает браузеру отправлять cookies
+            },
             success: function (data) {
                 localStorage.setItem("jwt", JSON.parse(data).token);
                 window.location.href = "dashboard.html";

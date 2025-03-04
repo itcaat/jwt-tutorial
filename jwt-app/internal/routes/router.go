@@ -17,6 +17,7 @@ func RegisterRoutes(r *mux.Router) {
 	// Публичные маршруты
 	r.HandleFunc("/", handlers.HomeHandler).Methods("GET")
 	r.HandleFunc("/login", handlers.LoginHandler).Methods("POST")
+	r.HandleFunc("/refresh", handlers.RefreshHandler).Methods("POST")
 
 	// Обработка preflight-запросов OPTIONS для всех путей
 	r.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

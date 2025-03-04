@@ -1,2 +1,4 @@
 .DS_Store
 .env
+ui/cert.pem
+ui/key.pem
