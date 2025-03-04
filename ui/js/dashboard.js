@@ -9,7 +9,7 @@ $(document).ready(function () {
 
     // Проверка токена перед загрузкой страницы
     $.ajax({
-        url: "http://api.127.0.0.1.nip.io/protected/read",
+        url: "https://api.127.0.0.1.nip.io/protected/read",
         method: "GET",
         headers: { "Authorization": "Bearer " + token },
         success: function (data) {
@@ -27,7 +27,7 @@ $(document).ready(function () {
     });
 
     $("#getData").click(function () {
-        makeAuthRequest("http://api.127.0.0.1.nip.io/protected/read", "GET", function (data) {
+        makeAuthRequest("https://api.127.0.0.1.nip.io/protected/read", "GET", function (data) {
             $("#data").text(JSON.stringify(data));
         });
     });
@@ -35,7 +35,7 @@ $(document).ready(function () {
     // Запись данных (только для write)
     $("#writeData").click(function () {
         $.ajax({
-            url: "http://api.127.0.0.1.nip.io/protected/write",
+            url: "https://api.127.0.0.1.nip.io/protected/write",
             method: "POST",
             headers: { "Authorization": "Bearer " + token },
             success: function (data) {
@@ -51,14 +51,15 @@ $(document).ready(function () {
     });
     
     function refreshToken(callback) {
+        console.log("Refreshing token...");
         $.ajax({
-            url: "http://api.127.0.0.1.nip.io/refresh",
+            url: "https://api.127.0.0.1.nip.io/refresh",
             method: "POST",
             xhrFields: {
                 withCredentials: true  // Разрешает отправку cookies
             },
             success: function (data) {
-                localStorage.setItem("jwt", data.access_token);
+                localStorage.setItem("jwt", JSON.parse(data).token);
                 if (callback) callback(); // Вызываем callback без аргументов
             },
             error: function () {
@@ -88,7 +89,4 @@ $(document).ready(function () {
             }
         });
     }
-    
-
-    
 });

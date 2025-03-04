@@ -46,12 +46,14 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		Value:    refreshToken,
 		HttpOnly: true,
 		Expires:  time.Now().Add(7 * 24 * time.Hour), // 7 дней
-		Path:     "/refresh",
+		Path:     "/",
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
 	})
 
-	// Отправляем access_token в JSON-ответе
+	// Отправляем token в JSON-ответе
 	json.NewEncoder(w).Encode(map[string]string{
-		"access_token": accessToken,
+		"token": accessToken,
 	})
 }
 
@@ -80,13 +82,13 @@ func RefreshHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(map[string]string{
-		"access_token": accessToken,
+		"token": accessToken,
 	})
 }
 
 // generateAccessToken создаёт короткоживущий JWT (10 мин)
 func generateAccessToken(username, role string) (string, error) {
-	expirationTime := time.Now().Add(10)
+	expirationTime := time.Now().Add(1 * time.Minute) // 1 минут
 
 	claims := &models.Claims{
 		Username: username,
