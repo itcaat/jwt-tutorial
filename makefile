@@ -19,3 +19,6 @@ run-api:
 
 test:
 	cd $(PATH_JWT_APP); go test ./internal/tests;
+
+ls:
+	find . -type f -not -path "./.git/*" -exec echo "===== {} =====" \; -exec cat {} \;\n
