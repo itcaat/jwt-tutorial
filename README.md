@@ -208,3 +208,91 @@ $ curl -X POST http://localhost:8080/login -H "Content-Type: application/json" -
 $ curl -X POST http://localhost:8080/protected/write -H "Authorization: Bearer <TOKEN>"
 # Ожидаемый ответ: {"message": "Data successfully written!", "username": "writer"}
 ```
+
+# Схема
+
+[Начало]
+  |
+  |--> (Пользователь вводит Логин и Пароль в UI)
+  |        |
+  |        |---> [login.js] -> (Отправка AJAX-запроса на `/login`)
+  |                     |
+  |                     |---> (Запрос передаётся в API: `LoginHandler`)
+  |                              |
+  |                              |---> (Проверка пользователя в `auth.Users`)
+  |                              |        |
+  |                              |        |--> Если пользователь не найден -> [Ошибка: Unauthorized (401)]
+  |                              |
+  |                              |---> (Создаётся `access_token` через `generateAccessToken()`)
+  |                              |        |
+  |                              |        |--> `access_token` = JWT на 10 минут
+  |                              |
+  |                              |---> (Создаётся `refresh_token` через `generateRefreshToken()`)
+  |                                       |
+  |                                       |--> `refresh_token` = JWT на 7 дней
+  |                                       |--> Устанавливается в `HttpOnly` cookie
+  |                                       |
+  |                                       |---> (Ответ API: `access_token` отправляется в UI)
+  |
+  |--> (UI получает `access_token`, сохраняет его в `localStorage`)
+  |        |
+  |        |---> (Редирект на `dashboard.html`)
+  |                 |
+  |                 |---> [dashboard.js] -> (Выполняется `$(document).ready()` после загрузки страницы)
+  |                           |
+  |                           |---> (Проверяем, есть ли `jwt` в `localStorage`)
+  |                           |        |
+  |                           |        |--> Если нет `jwt`, редирект на `index.html`
+  |                           |
+  |                           |---> (Отправляем `GET /protected/read` с `Authorization: Bearer <jwt>`)
+  |                                    |
+  |                                    |---> (API проверяет токен и возвращает данные)
+  |                                    |
+  |                                    |---> (UI получает данные и показывает их на странице)
+  |
+  |--> (Пользователь нажимает "Получить данные")
+  |        |
+  |        |---> [dashboard.js] -> (Отправка AJAX-запроса `GET /protected/read`)
+  |                     |
+  |                     |---> (Запрос передаётся в API: `ReadHandler`)
+  |                              |
+  |                              |---> (Проверка `access_token` через `JWTMiddleware`)
+  |                                       |
+  |                                       |--> Если `access_token` просрочен -> [Ошибка: Unauthorized (401)]
+  |
+  |--> (Если `access_token` просрочен, вызываем `refreshToken()`)
+  |        |
+  |        |---> [dashboard.js] -> (Отправка AJAX-запроса `POST /refresh`)
+  |                     |
+  |                     |---> (Запрос передаётся в API: `RefreshHandler`)
+  |                              |
+  |                              |---> (Читаем `refresh_token` из cookie)
+  |                              |
+  |                              |---> (Проверяем `refresh_token` через `validateRefreshToken()`)
+  |                                       |
+  |                                       |--> Если `refresh_token` просрочен -> [Ошибка: Unauthorized (401)]
+  |
+  |                              |---> (Создаём новый `access_token` через `generateAccessToken()`)
+  |                              |
+  |                              |---> (Отправляем `access_token` в UI)
+  |
+  |--> (UI получает новый `access_token`, сохраняет его в `localStorage`)
+  |        |
+  |        |---> (Повторяем запрос `GET /protected/read`)
+  |                     |
+  |                     |---> (Запрос передаётся в API: `ReadHandler`)
+  |                              |
+  |                              |---> (Проверяем новый `access_token`)
+  |                              |        |
+  |                              |        |--> (Пользователь авторизован)
+  |                              |
+  |                              |---> (Отправляем данные пользователя в UI)
+  |
+  |--> (UI показывает данные на `dashboard.html`)
+  |
+  |--> (Пользователь нажимает "Выйти")
+  |        |
+  |        |---> [dashboard.js] -> (Удаляем `access_token` из `localStorage`)
+  |        |---> (Редирект на `index.html`)
+  |
+[Конец]
