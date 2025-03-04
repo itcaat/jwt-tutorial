@@ -9,9 +9,15 @@ services:
   ui:
     build:
       context: ./ui
+    restart: always
+
+  nginx-ingress:
+    build:
+      context: ./nginx-ingress
     ports:
       - '443:443'
       - '80:80'
     depends_on:
       - api
+      - ui
     restart: always

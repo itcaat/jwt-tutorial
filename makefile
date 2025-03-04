@@ -1,4 +1,5 @@
 # Variables
+PATH_NGINX_INGRESS = jwt-app
 PATH_JWT_APP = jwt-app
 PATH_UI = ui
 
@@ -6,7 +7,7 @@ PATH_UI = ui
 args = $(foreach a,$($(subst -,_,$1)_args),$(if $(value $a),$a="$($a)"))
 
 init:
-	cd $(PATH_UI); mkcert -key-file key.pem -cert-file cert.pem '127.0.0.1.nip.io' '*.127.0.0.1.nip.io' ;
+	cd $(PATH_NGINX_INGRESS); mkcert -key-file key.pem -cert-file cert.pem '127.0.0.1.nip.io' '*.127.0.0.1.nip.io' ;
 
 run-compose:
 	docker compose up --build;

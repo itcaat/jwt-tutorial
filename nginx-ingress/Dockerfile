@@ -7,6 +7,9 @@ RUN rm /etc/nginx/conf.d/default.conf
 # Копируем наш конфиг
 COPY nginx.conf /etc/nginx/conf.d/
 
+COPY cert.pem /etc/nginx/certs/
+COPY key.pem /etc/nginx/certs/
+
 # Копируем файлы UI
 COPY . /usr/share/nginx/html
 
