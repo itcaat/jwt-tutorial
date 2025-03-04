@@ -131,3 +131,25 @@ func validateRefreshToken(refreshToken string) (*models.RefreshClaims, error) {
 
 	return claims, nil
 }
+
+// LogoutHandler – удаляет refresh-токен при выходе
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+	// Удаляем refresh-токен из cookie
+	http.SetCookie(w, &http.Cookie{
+		Name:     "refresh_token",
+		Value:    "",
+		HttpOnly: true,
+		Expires:  time.Now().Add(-1 * time.Hour), // 7 дней
+		Path:     "/",
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
+	})
+
+	// Можно добавить refresh_token в чёрный список (например, Redis)
+	// blacklistedTokens[refreshToken] = true
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "Logout successful",
+	})
+}
