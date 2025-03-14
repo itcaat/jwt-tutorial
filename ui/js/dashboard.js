@@ -9,7 +9,7 @@ $(document).ready(function () {
 
     // Проверка токена перед загрузкой страницы
     $.ajax({
-        url: "https://api.127.0.0.1.nip.io/protected/read",
+        url: "https://api.localhost.devopsbrain.ru/protected/read",
         method: "GET",
         headers: { "Authorization": "Bearer " + token },
         success: function (data) {
@@ -27,20 +27,16 @@ $(document).ready(function () {
     });
 
     $("#getData").click(function () {
-        makeAuthRequest("https://api.127.0.0.1.nip.io/protected/read", "GET", function (data) {
+        makeAuthRequest("https://api.localhost.devopsbrain.ru/protected/read", "GET", function (data) {
             $("#data").text(JSON.stringify(data));
         });
     });
 
     // Запись данных (только для write)
     $("#writeData").click(function () {
-        $.ajax({
-            url: "https://api.127.0.0.1.nip.io/protected/write",
-            method: "POST",
-            headers: { "Authorization": "Bearer " + token },
-            success: function (data) {
-                $("#writeMessage").text(JSON.parse(data).message || "Ошибка!");
-            }
+        makeAuthRequest("https://api.localhost.devopsbrain.ru/protected/write", "POST", function (data) {
+            $("#writeMessage").removeClass("d-none");
+            $("#writeMessage").text(JSON.parse(data).message || "Ошибка");
         });
     });
 
@@ -53,7 +49,7 @@ $(document).ready(function () {
     function refreshToken(callback) {
         console.log("Refreshing token...");
         $.ajax({
-            url: "https://api.127.0.0.1.nip.io/refresh",
+            url: "https://api.localhost.devopsbrain.ru/refresh",
             method: "POST",
             xhrFields: {
                 withCredentials: true  // Разрешает отправку cookies
@@ -82,10 +78,7 @@ $(document).ready(function () {
                     refreshToken(function () {
                         makeAuthRequest(url, method, successCallback);
                     });
-                } else {
-                    localStorage.removeItem("jwt");
-                    window.location.href = "index.html";
-                }
+                } 
             }
         });
     }

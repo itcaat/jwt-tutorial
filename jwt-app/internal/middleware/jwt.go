@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/itcaat/jwt-tutorial/jwt-app/internal/auth"
 	"github.com/itcaat/jwt-tutorial/jwt-app/internal/config"
 	"github.com/itcaat/jwt-tutorial/jwt-app/internal/models"
 )
@@ -27,6 +28,12 @@ func JWTMiddleware(next http.Handler) http.Handler {
 
 		if err != nil || !token.Valid {
 			http.Error(w, "Invalid or expired token", http.StatusUnauthorized)
+			return
+		}
+
+		_, exists := auth.Users[claims.Username]
+		if !exists {
+			http.Error(w, "User not exists", http.StatusUnauthorized)
 			return
 		}
 

@@ -5,7 +5,7 @@ $(document).ready(function () {
         const password = $("#password").val();
 
         $.ajax({
-            url: "https://api.127.0.0.1.nip.io/login",
+            url: "https://api.localhost.devopsbrain.ru/login",
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify({ username, password }),

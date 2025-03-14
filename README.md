@@ -296,3 +296,5 @@ $ curl -X POST http://localhost:8080/protected/write -H "Authorization: Bearer <
   |        |---> (Редирект на `index.html`)
   |
 [Конец]
+
+https://bolt.new/~/sb1-68edkmz7
